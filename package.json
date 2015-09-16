@@ -1,0 +1,30 @@
+{
+  "name": "fruity-scissors",
+  "version": "0.0.1",
+  "description": "A game about fruits. Similar game play to rock paper scissors",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NathanBland/fruity-scissors.git"
+  },
+  "keywords": [
+    "fruit",
+    "scissors"
+  ],
+  "author": "Nathan Bland",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/NathanBland/fruity-scissors/issues"
+  },
+  "homepage": "https://github.com/NathanBland/fruity-scissors#readme",
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "mongoose": "^4.1.7",
+    "nunjucks": "^2.0.0",
+    "socket.io": "^1.3.6"
+  }
+}

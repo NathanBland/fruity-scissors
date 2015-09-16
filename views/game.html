@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/css/site.css">
+{% endblock %}
+{% block body %}
+<article class="">
+    <h1>Fruity Scissors</h1>
+    {% include "partials/game/index.html" %}
+</article>
+{% endblock %}
+{% block scripts %}
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io('game/owner/{{game.owner}}');
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/css/site.css">
+{% endblock %}
+{% block body %}
+<article class="">
+    <h1>Fruity Scissors</h1>
+    <p>Hey welcome to Fruity Scissors. The game about fruits that don't like each other.<p>
+    <p>Eventually we'll ask you to register to play so we can keep track of wins and losses, but for now just click below to start a new game.</p>
+    <form action="/game" method="post">
+      <label for="name">
+        <input type="text" name="name" placeholder="jimmy">
+      </label>
+      <button type="submit">New Game</button>
+</article>
+{% endblock %}
+{% block scripts %}
+{% endblock %}
