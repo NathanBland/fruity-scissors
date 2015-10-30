@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/css/site.css">
 {% endblock %}
 {% block body %}
-<article class="">
+<article class="container">
     <h1>Fruity Scissors</h1>
     {% include "partials/game/index.html" %}
 </article>
@@ -11,6 +11,128 @@
 {% block scripts %}
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io('game/owner/{{game.owner}}');
+  
+  var socket = io()
+            .on('connect', function() {
+                socket.emit('join', location.pathname)
+            })
+  
+  var user_id = 0
+  var sentInvite = false
+  var ready = false
+  var cards = document.querySelector('#card-select')
+  socket.on('invite', function(data) {
+      console.log('invite data:', data)
+      if (!sentInvite) {
+        sentInvite = true
+        var link = document.createElement('a')
+        link.setAttribute('href', location.origin + '/game/' + data.game)
+        link.textContent = 'Join newer game'
+        document.querySelector('.container').appendChild(link)
+      }
+  })
+  socket.on('room', function(data){
+    console.log(data)
+    var player = document.querySelector('#player1 > span')
+      player.innerHTML = '{{game.owner}}'
+    if (data.user_count === 1 && sentInvite === false){
+      {% if previous %}
+        sentInvite = true
+        socket.emit('disconnect')
+        socket.emit('join', '{{previous}}')
+        socket.emit('invite', {'game': '{{game._id}}'})
+        socket.emit('leave', '{{previous}}')
+        socket.emit('disconnect')
+        socket.emit('connect')
+        socket.emit('join', location.pathname)
+        user_id = 1
+      {% else %}
+        user_id = 1
+      {% endif %}
+    } else if (data.user_count === 2 && user_id === 0 && sentInvite !== true){
+      user_id = 2
+      
+      var player = document.querySelector('#player2 > span')
+      var nameForm = document.querySelector('#player2__name')
+      nameForm.style.display = 'block'
+      nameForm.addEventListener('submit', function(e){
+        e.preventDefault()
+        var name = nameForm.querySelector('input').value
+        console.log('player 2 name:', name)
+        player.innerHTML = name
+        socket.emit('name_set', {'player': user_id,'name': name})
+        ready = true
+        nameForm.style.display = 'none'
+        cards.style.display = 'block'
+      })
+    }
+  })
+  socket.on('name_set', function(data) {
+    console.log('name_set', data.player, data.name)
+      if (data.player === 2){
+        var player = document.querySelector('#player2 > span')
+        player.innerHTML = data.name
+        ready = true
+      }
+      if (ready === true){
+        cards.style.display = 'block'
+      }
+  })
+  socket.on('error', function(data) {
+      console.log('error:', data)
+  })
+  socket.on('card_set', function(data) {
+      console.log('card_set:', data)
+  })
+  socket.on('game_over', function(game) {
+      console.log('game_over:', game)
+      var result = document.createElement('div')
+      result.className = 'result'
+      var text = document.createElement('h1')
+      var winner = game.winner || ''
+      if (winner !== ''){
+        text.innerHTML = "The Winner is: " + game.winner.card+"!"
+      } else {
+        text.innerHTML = 'This game ended in a draw!'
+      }
+      result.appendChild(text)
+      var button = document.createElement('button')
+      button.innerHTML = 'New game'
+      var form = document.createElement('form')
+      var input = document.createElement('input')
+      var previous = document.createElement('input')
+      var label = document.createElement('label')
+      form.setAttribute('method', 'post')
+      form.setAttribute('action', '/game')
+      
+      label.innerHTML = 'Name:'
+      
+      input.setAttribute('type', 'text')
+      input.setAttribute('placeholder', '{{game.owner}}')
+      input.setAttribute('name', 'name')
+      
+      previous.setAttribute('type', 'hidden')
+      previous.setAttribute('name', 'previous')
+      console.log('game:', game)
+      previous.setAttribute('value', game._id)
+      
+      label.appendChild(input)
+      form.appendChild(label)
+      form.appendChild(button)
+      form.appendChild(previous)
+      result.appendChild(form)
+      document.querySelector('.container').appendChild(result)
+  })
+  cards.addEventListener('submit', function(e){
+    e.preventDefault()
+    cards.style.display = 'none'
+    var selection = cards.querySelector('select')
+    socket.emit('play', {'player': user_id, 'card': selection.value})
+  })
+  window.onbeforeunload = function(e) {
+    socket.emit('disconnect');
+  }
+  
+    
 </script>
 {% endblock %}

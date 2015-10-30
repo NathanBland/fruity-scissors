@@ -1,1 +1,19 @@
 <h2>Owner: {{game.owner}}</h2>
+<h3 id="player1">Player 1: <span></span></h3>
+<h3 id="player2">Player 2: <span>Waiting...</span></h3>
+<form id="player2__name" method="post">
+    <input type="text" placeholder="Mike" name='name'>
+    <button type="submit">Set name</button>
+</form>
+<form id="card-select" method='post'>
+    <select name="card">
+    <option value="Watermelon">Watermelon</option>
+    <option value="Apple">Apple</option>
+    <option value="Grapes">Grapes</option>
+    <option value="Pineapple">Pineapple</option>
+    <option value="Banana">Banana</option>
+    <option value="Tomato">Tomato</option>
+    <option value="Kiwi">Kiwi</option>
+    </select>
+    <button type="submit">Finalize Fruit!</button>
+</form>

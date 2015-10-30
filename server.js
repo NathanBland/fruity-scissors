@@ -9,7 +9,6 @@ var config = {PORT: 8080, IP: '0.0.0.0'}
 
 var app = require('express')()
 var io = require('socket.io')()
-io.set('origins','http://localhost:8080')
 app.io = io
 var routes = require('./routes/')
 
